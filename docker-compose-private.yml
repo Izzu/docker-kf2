@@ -4,7 +4,7 @@ services:
     killingfloor2:
         container_name: killingfloor2
         image: dwurf/docker-kf2:latest
-        # Uncomment this to skip auto-update
+        #Uncomment this to skip auto-update
         #command: update validate
         #command: update -beta preview validate
         restart: always
@@ -22,7 +22,7 @@ services:
         volumes:
             - /home/izzuthug/KillingFloor2:/home/steam/kf2server 
             - /home/izzuthug/KillingFloor2/steam:/home/steam/steam 
-            - /home/izzuthug/KillingFloor2/game.yml:/home/steam/game.yml:ro
+            #- /home/izzuthug/KillingFloor2/game.yml:/home/steam/game.yml:ro
         logging:
             # limit logs retained on host to 25MB
             driver: "json-file"
