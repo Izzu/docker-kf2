@@ -25,7 +25,7 @@ function require_ruby() {
 
 function require_kf2() {
     # Download kf2
-    [[ -f "$path/kf2server/Binaries/Win64/KFServer.exe" ]] || ( \
+    [[ -f "$path/Binaries/Win64/KFServer.exe" ]] || ( \
         cd "$path/steam"
         ./steamcmd.sh \
             +force_install_dir "$path/kf2server" \
@@ -51,14 +51,14 @@ function update() {
 function require_config() {
   
     # Generate INI files if they don't exist
-    if [[ ! -f "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini" ]]; then
-        "$path/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64" kf-bioticslab?difficulty=0?adminpassword=secret?gamepassword=secret -port=7777 > /dev/null 2>&1 &
+    if [[ ! -f "$path/KFGame/Config/LinuxServer-KFGame.ini" ]]; then
+        "$path/Binaries/Win64/KFGameSteamServer.bin.x86_64" kf-bioticslab?difficulty=0?adminpassword=secret?gamepassword=secret -port=7777 > /dev/null 2>&1 &
         kfpid=$!
 	sleep 20
         kill -9 $kfpid
 	echo "Killed KF2 server - will restart momentarily"
         #Workaround as per https://wiki.tripwireinteractive.com/index.php?title=Dedicated_Server_%28Killing_Floor_2%29#Setting_Up_Steam_Workshop_For_Servers
-        mkdir -p "$path/kf2server/KFGame/Cache"
+        mkdir -p "$path/KFGame/Cache"
     fi
 
     if [[ -f "$path/game.yml" ]]; then
@@ -122,18 +122,18 @@ function load_config() {
 
 
     ## Now we edit the config files to set the config
-    sed -i "s/^GameLength=.*/GameLength=$KF_GAME_LENGTH\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^ServerName=.*/ServerName=$KF_SERVER_NAME\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^bEnabled=.*/bEnabled=$KF_ENABLE_WEB\r/" "$path/kf2server/KFGame/Config/KFWeb.ini"
+    sed -i "s/^GameLength=.*/GameLength=$KF_GAME_LENGTH\r/" "$path/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^ServerName=.*/ServerName=$KF_SERVER_NAME\r/" "$path/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^bEnabled=.*/bEnabled=$KF_ENABLE_WEB\r/" "$path/KFGame/Config/KFWeb.ini"
     if [[ "${KF_DISABLE_TAKEOVER}" == 'true' ]]; then 
-      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=FALSE\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
+      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=FALSE\r/" "$path/KFGame/Config/LinuxServer-KFEngine.ini"
     else
-      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=TRUE\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
+      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=TRUE\r/" "$path/KFGame/Config/LinuxServer-KFEngine.ini"
     fi
     sed -i "s/^DownloadManagers=IpDrv.HTTPDownload/DownloadManagers=OnlineSubsystemSteamworks.SteamWorkshopDownload/" "$path/KFGame/Config/LinuxServer-KFEngine.ini"
-    sed -i "s/^BannerLink=.*/BannerLink=${KF_BANNER_LINK}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^ServerMOTD=.*/ServerMOTD=${KF_MOTD}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^WebsiteLink=.*/WebsiteLink=${KF_WEBSITE_LINK}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^BannerLink=.*/BannerLink=${KF_BANNER_LINK}/" "$path/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^ServerMOTD=.*/ServerMOTD=${KF_MOTD}/" "$path/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^WebsiteLink=.*/WebsiteLink=${KF_WEBSITE_LINK}/" "$path/KFGame/Config/LinuxServer-KFGame.ini"
 
 }
 
@@ -141,7 +141,7 @@ function launch() {
     export WINEDEBUG=fixme-all
     local cmd
 
-    cmd="$path/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64 "
+    cmd="$path/Binaries/Win64/KFGameSteamServer.bin.x86_64 "
     cmd+="$KF_MAP?Game=KFGameContent.KFGameInfo_$KF_GAME_MODE"
     cmd+="?Difficulty=$KF_DIFFICULTY"
     cmd+="?AdminPassword=$KF_ADMIN_PASS"
