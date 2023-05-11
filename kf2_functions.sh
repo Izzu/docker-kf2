@@ -2,16 +2,16 @@ $path="home/izzuthug/KillingFloor2"
 
 function require_steamcmd() {
     # Download/extract steam
-    mkdir -p "$path/steam/downloads"
-    [[ -f "$path/steam/downloads/steamcmd_linux.tar.gz" ]] || \
+    mkdir -p "home/izzuthug/KillingFloor2/steam/downloads"
+    [[ -f "home/izzuthug/KillingFloor2/steam/downloads/steamcmd_linux.tar.gz" ]] || \
         wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -P "$path/steam/downloads"
-    [[ -f "$path/steam/steamcmd.sh" ]] || (
-        cd "$path/steam"
+    [[ -f "home/izzuthug/KillingFloor2/steam/steamcmd.sh" ]] || (
+        cd "home/izzuthug/KillingFloor2/steam"
         tar xzvf downloads/steamcmd_linux.tar.gz
     )
     
     (
-        cd "$path/steam"
+        cd "home/izzuthug/KillingFloor2/steam"
         ./steamcmd.sh +exit
     )
 }
