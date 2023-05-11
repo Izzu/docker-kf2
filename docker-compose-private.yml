@@ -15,7 +15,7 @@ services:
             - 8081:8080
         environment:
             - KF_DIFFICULTY=1
-            - KF_DISABLE_TAKEOVER=false
+            - KF_DISABLE_TAKEOVER=true
             - KF_ENABLE_WEB=true
             - KF_GAME_LENGTH=1
             - KF_MAP=KF-BioticsLab
