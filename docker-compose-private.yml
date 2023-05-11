@@ -21,7 +21,9 @@ services:
             - KF_MAP=KF-BioticsLab
         volumes:
             - /home/izzuthug/KillingFloor2:/home/steam/kf2server 
-            - /home/izzuthug/KillingFloor2/steam:/home/steam/steam 
+            - /home/izzuthug/KillingFloor2/steam:/home/steam/steam
+            - /home/izzuthug/KillingFloor2/Binaries/Win64/steamapps:/home/steam/kf2server/Binaries/Win64/steamapps
+            - /home/izzuthug/KillingFloor2/KFGame/Cache:/home/steam/kf2server/KFGame/Cache
             #- /home/izzuthug/KillingFloor2/game.yml:/home/steam/game.yml:ro
         logging:
             # limit logs retained on host to 25MB
