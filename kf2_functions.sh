@@ -1,15 +1,17 @@
+$path="home/izzuthug/KillingFloor2"
+
 function require_steamcmd() {
     # Download/extract steam
-    mkdir -p "$HOME/steam/downloads"
-    [[ -f "$HOME/steam/downloads/steamcmd_linux.tar.gz" ]] || \
-        wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -P "$HOME/steam/downloads"
-    [[ -f "$HOME/steam/steamcmd.sh" ]] || (
-        cd "$HOME/steam"
+    mkdir -p "$path/steam/downloads"
+    [[ -f "$path/steam/downloads/steamcmd_linux.tar.gz" ]] || \
+        wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz -P "$path/steam/downloads"
+    [[ -f "$path/steam/steamcmd.sh" ]] || (
+        cd "$path/steam"
         tar xzvf downloads/steamcmd_linux.tar.gz
     )
     
     (
-        cd "$HOME/steam"
+        cd "$path/steam"
         ./steamcmd.sh +exit
     )
 }
@@ -23,10 +25,10 @@ function require_ruby() {
 
 function require_kf2() {
     # Download kf2
-    [[ -f "$HOME/kf2server/Binaries/Win64/KFServer.exe" ]] || ( \
-        cd "$HOME/steam"
+    [[ -f "$path/kf2server/Binaries/Win64/KFServer.exe" ]] || ( \
+        cd "$path/steam"
         ./steamcmd.sh \
-            +force_install_dir "$HOME/kf2server" \
+            +force_install_dir "$path/kf2server" \
             +app_update 232130 validate \
             +login anonymous  \
             +exit
@@ -34,11 +36,11 @@ function require_kf2() {
 }
 
 function update() {
-    rm -rf "$HOME/steam/steamapps"
+    rm -rf "$path/steam/steamapps"
     (
-        cd "$HOME/steam"
+        cd "$path/steam"
         ./steamcmd.sh \
-            +force_install_dir "$HOME/kf2server" \
+            +force_install_dir "$path/kf2server" \
             +app_update 232130 "$@" \
             +login anonymous \
             +exit
@@ -49,20 +51,20 @@ function update() {
 function require_config() {
   
     # Generate INI files if they don't exist
-    if [[ ! -f "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini" ]]; then
-        "$HOME/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64" kf-bioticslab?difficulty=0?adminpassword=secret?gamepassword=secret -port=7777 > /dev/null 2>&1 &
+    if [[ ! -f "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini" ]]; then
+        "$path/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64" kf-bioticslab?difficulty=0?adminpassword=secret?gamepassword=secret -port=7777 > /dev/null 2>&1 &
         kfpid=$!
 	sleep 20
         kill -9 $kfpid
 	echo "Killed KF2 server - will restart momentarily"
         #Workaround as per https://wiki.tripwireinteractive.com/index.php?title=Dedicated_Server_%28Killing_Floor_2%29#Setting_Up_Steam_Workshop_For_Servers
-        mkdir -p "$HOME/kf2server/KFGame/Cache"
+        mkdir -p "$path/kf2server/KFGame/Cache"
     fi
 
-    if [[ -f "$HOME/game.yml" ]]; then
+    if [[ -f "$path/game.yml" ]]; then
       (
       	echo "Generating configuration"
-        cd "$HOME/configurator"
+        cd "$path/configurator"
         ruby GenerateConfig.rb
       )
     fi
@@ -120,18 +122,18 @@ function load_config() {
 
 
     ## Now we edit the config files to set the config
-    sed -i "s/^GameLength=.*/GameLength=$KF_GAME_LENGTH\r/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^ServerName=.*/ServerName=$KF_SERVER_NAME\r/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^bEnabled=.*/bEnabled=$KF_ENABLE_WEB\r/" "$HOME/kf2server/KFGame/Config/KFWeb.ini"
+    sed -i "s/^GameLength=.*/GameLength=$KF_GAME_LENGTH\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^ServerName=.*/ServerName=$KF_SERVER_NAME\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^bEnabled=.*/bEnabled=$KF_ENABLE_WEB\r/" "$path/kf2server/KFGame/Config/KFWeb.ini"
     if [[ "${KF_DISABLE_TAKEOVER}" == 'true' ]]; then 
-      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=FALSE\r/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
+      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=FALSE\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
     else
-      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=TRUE\r/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
+      sed -i "s/^bUsedForTakeover=.*/bUsedForTakeover=TRUE\r/" "$path/kf2server/KFGame/Config/LinuxServer-KFEngine.ini"
     fi
-    sed -i "s/^DownloadManagers=IpDrv.HTTPDownload/DownloadManagers=OnlineSubsystemSteamworks.SteamWorkshopDownload/" "$HOME/KFGame/Config/LinuxServer-KFEngine.ini"
-    sed -i "s/^BannerLink=.*/BannerLink=${KF_BANNER_LINK}/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^ServerMOTD=.*/ServerMOTD=${KF_MOTD}/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
-    sed -i "s/^WebsiteLink=.*/WebsiteLink=${KF_WEBSITE_LINK}/" "$HOME/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^DownloadManagers=IpDrv.HTTPDownload/DownloadManagers=OnlineSubsystemSteamworks.SteamWorkshopDownload/" "$path/KFGame/Config/LinuxServer-KFEngine.ini"
+    sed -i "s/^BannerLink=.*/BannerLink=${KF_BANNER_LINK}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^ServerMOTD=.*/ServerMOTD=${KF_MOTD}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
+    sed -i "s/^WebsiteLink=.*/WebsiteLink=${KF_WEBSITE_LINK}/" "$path/kf2server/KFGame/Config/LinuxServer-KFGame.ini"
 
 }
 
@@ -139,7 +141,7 @@ function launch() {
     export WINEDEBUG=fixme-all
     local cmd
 
-    cmd="$HOME/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64 "
+    cmd="$path/kf2server/Binaries/Win64/KFGameSteamServer.bin.x86_64 "
     cmd+="$KF_MAP?Game=KFGameContent.KFGameInfo_$KF_GAME_MODE"
     cmd+="?Difficulty=$KF_DIFFICULTY"
     cmd+="?AdminPassword=$KF_ADMIN_PASS"
